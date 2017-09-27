@@ -5,47 +5,55 @@ export default class Recorder {
 
     start() {
         this.audioCtx = new AudioContext();
-        navigator.mediaDevices.getUserMedia(
-            {
-                video: true,
-                audio: {
-                    echoCancellation: true, // disabling audio processing
-                    googAutoGainControl: true,
-                    autoGainControl: true,
-                    googNoiseSuppression: true,
-                    noiseSuppression: true,
-                    channelCount:1,
-                    googHighpassFilter: true,
-                    googTypingNoiseDetection: true,
-                    echoCancellation: true,
-                    sampleSize: 16,
-                    sampleRate: 16000
-                }
+        navigator.mediaDevices.getUserMedia({
+            video: false,
+            audio: {
+                echoCancellation: true, // disabling audio processing
+                googAutoGainControl: true,
+                autoGainControl: true,
+                googNoiseSuppression: true,
+                noiseSuppression: true,
+                channelCount:1,
+                googHighpassFilter: true,
+                googTypingNoiseDetection: true,
+                echoCancellation: true,
+                sampleSize: 16,
+                sampleRate: 16000
             }
-        )
-            .then(stream => {
+        })
+        .then(stream => {
             this.audioStream = stream;
-        this.isRunning = true;
+            this.isRunning = true;
 
-        const input = this.audioCtx.createMediaStreamSource(stream);
+            const input = this.audioCtx.createMediaStreamSource(stream);
+            const analyser = this.audioCtx.createAnalyser();
+            const compressor = this.setupCompressor();
 
-        var compressor = this.audioCtx.createDynamicsCompressor();
+            const muteNode = this.audioCtx.createGain();
+            muteNode.gain.value = 0.0;
+
+            input.connect(compressor);
+            compressor.connct(analyser);
+            analyser.connect(muteNode);
+            muteNode.connect(this.audioCtx.destination);
+        })
+        .catch(console.error);
+
+    }
+    
+    stop() {
+        this.audioStream && this.audioStream.getAudioTracks()[0].stop();
+        this.isRunning = false;
+    }
+
+    setupCompressor() {
+        const compressor = this.audioCtx.createDynamicsCompressor();
         compressor.threshold.value = -50;
         compressor.knee.value = 40;
         compressor.ratio.value = 12;
         compressor.attack.value = 0;
         compressor.release.value = 0.25;
 
-        input.connect(compressor);
-        compressor.connect(this.audioCtx.destination);
-
-    })
-    .
-        catch(console.error);
-    }
-
-    stop() {
-        this.audioStream && this.audioStream.getAudioTracks()[0].stop();
-        this.isRunning = false;
+        return compressor;
     }
 }
