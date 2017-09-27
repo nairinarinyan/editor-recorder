@@ -28,10 +28,6 @@ body {
     background-color: rgba(0, 158, 208, .3);
 }
 
-.controls {
-    display: flex;
-}
-
 .button {
     display: flex;
     align-items: center;
@@ -59,21 +55,41 @@ body {
     border-radius: 3px;
 }
 
-.button-svg circle {
-    stroke-dashoffset: 0;
-    transition: stroke-dashoffset 1s linear;
+#record-button {
+    transform: rotate(-90deg);
+}
+
+#record-button circle {
     stroke-width: 0.3em;
 }
 
-.button-svg .bar {
+#record-button #timer-bar {
     stroke: #00b2eb;
+    stroke-linecap: round;
+    fill: none;
+    stroke-dashoffset: 0;
+    stroke-dasharray: 565.48px;
+    
 }
 
-.control-panel {
+#record-button.recording #timer-bar {
+    animation: dash 60s linear;
+}
+
+@keyframes dash {
+    from {
+      stroke-dashoffset: 565.48px;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+#control-panel {
     position: relative;
 }
 
-.control-panel img {
+#control-panel img {
     user-select: none;
     position: absolute;
     top: 30px;
@@ -82,21 +98,14 @@ body {
     height: 30px;
 }
 
-.control-panel.small img {
-    top: 33px;
-    left: 33px;
-    width: 25px;
-    height: 25px;
-}
-
-.control-panel.recording .record-icon {
+#control-panel.recording .record-icon {
     display: none;
 }
 
-.control-panel.recording .stop-icon {
+#control-panel.recording .stop-icon {
     display: block;
 }
 
-.control-panel .stop-icon {
+#control-panel .stop-icon {
     display: none;
 }
