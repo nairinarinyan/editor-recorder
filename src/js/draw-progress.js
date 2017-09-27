@@ -6,8 +6,8 @@ export default class DrawProgress {
         this.progress = 100;
         this.isRunning = false;
         this.circle = timerBar;
-        this.radius = timerBar.getAttribute('r');
-        this.c = Math.PI * (this.radius * 2);
+        this.radius = parseInt(timerBar.getAttribute('r'), 10);
+        this.c = 2 * Math.PI * this.radius;
     }
 
     getPercentage(value) {
@@ -17,8 +17,8 @@ export default class DrawProgress {
     play() {
         this.isRunning = true;
         this.timer = setInterval(() => {
-            const val = this.progress - 1/10;
-            this.setProgress(val);
+            this.progress = this.progress - 10;
+            this.setProgress(this.progress);
         }, 1000);
     }
 
@@ -28,11 +28,14 @@ export default class DrawProgress {
         this.timer = null;
         this.setProgress(100);
     }
-
+   
     setProgress(value) {
-        this.progress = value;
-        console.log('-----', this.getPercentage(value));
+        // this.progress = value;
+        // console.log('-----', this.getPercentage(value));
+        // this.circle.style.strokeDashoffset = this.getPercentage(value);
+        
         this.circle.style.strokeDashoffset = this.getPercentage(value);
     }
+
 }
     

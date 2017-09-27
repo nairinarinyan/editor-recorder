@@ -12,9 +12,9 @@ controlPanel.addEventListener('click', () => {
 
     if (!recorder.isRunning) {
         recorder.start();
-        drawProgress.play();
+        // drawProgress.play();
     } else {
         recorder.stop();
-        drawProgress.stop();
+        // drawProgress.stop();
     }
 });

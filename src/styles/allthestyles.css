@@ -41,13 +41,35 @@ body {
     border-radius: 3px;
 }
 
+#record-button {
+    transform: rotate(-90deg);
+}
+
 #record-button circle {
     stroke-width: 0.3em;
 }
 
 #record-button #timer-bar {
     stroke: #00b2eb;
+    stroke-linecap: round;
+    fill: none;
+    stroke-dashoffset: 0;
+    stroke-dasharray: 565.48px;
+    
 }
+
+#record-button.recording #timer-bar {
+    animation: dash 60s linear;
+}
+
+@keyframes dash {
+    from {
+      stroke-dashoffset: 565.48px;
+    }
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
 
 #control-panel {
     position: relative;
