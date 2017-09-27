@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm-run-all -p 'bundle -- --watch' serve",
+    "start": "npm-run-all -p bundle serve",
     "bundle": "rollup src/js/index.js --format iife --output build/bundle.js --watch",
     "serve": "http-server -c-1"
   },
