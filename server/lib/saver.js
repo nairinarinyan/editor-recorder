@@ -1,4 +1,5 @@
 const fs = require('fs');
+const Config = require('./config');
 
 class Saver {
     constructor() {
@@ -6,7 +7,7 @@ class Saver {
     }
 
     init() {
-        this.file = fs.createWriteStream('./server/output/result.mp3');
+        this.file = fs.createWriteStream(Config.SOUND_FILE_NAME);
     }
 
     saveChunk(chunk) {
