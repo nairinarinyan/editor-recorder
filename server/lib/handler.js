@@ -18,6 +18,5 @@ class requestHandler {
 
 module.exports = function(req) {
     const handler = new requestHandler();
-
     return handler.proccess(req);
 };
