@@ -1,0 +1,26 @@
+{
+  "name": "editor-recorder",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm-run-all -p 'bundle -- --watch' serve",
+    "bundle": "rollup src/index.js --format iife --output build/bundle.js --watch",
+    "serve": "http-server -c-1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nairinarinyan/editor-recorder.git"
+  },
+  "author": "Greetz Editor Team",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nairinarinyan/editor-recorder/issues"
+  },
+  "homepage": "https://github.com/nairinarinyan/editor-recorder#readme",
+  "devDependencies": {
+    "http-server": "^0.10.0",
+    "npm-run-all": "^4.1.1",
+    "rollup": "^0.50.0"
+  }
+}
