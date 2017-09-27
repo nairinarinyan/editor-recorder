@@ -24,5 +24,5 @@ controlPanel.addEventListener('click', () => {
 });
 
 initTouchEventHandlers(canvas, (startRatio, endRatio) => {
-        
+    
 });
