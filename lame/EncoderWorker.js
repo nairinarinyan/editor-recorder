@@ -50,16 +50,15 @@ self.onmessage = function(event) {
             }
             break;
         case 'finish':
-            // if (buffers != null)
-            //     while (buffers.length > 0)
-            //         encoder.encode(buffers.shift());
+            let buf = getBuffers();
 
-            // self.postMessage({ blob: encoder.finish() });
-
-            // encoder = undefined;
-
-            self.postMessage({ buffers: getBuffers() });
-
+            if (buffers != null) {
+                while (buffers.length > 0) {
+                    encoder.encode(buffers.shift());
+                }
+            }
+            self.postMessage({ buffers: buf, blob: encoder.finish() });
+            encoder = undefined;
             break;
         case 'cancel':
             encoder.cancel();

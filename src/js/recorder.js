@@ -13,22 +13,13 @@ export default class Recorder {
     }
 
     saveRecording(blob){
-        let blobUrl = URL.createObjectURL(blob);
-        console.log('Got a recoding at', blobUrl);
-        let a = document.createElement("a");
-        document.body.appendChild(a);
-        a.style = "display: none";
-        a.href = blobUrl;
-        a.download = 'recording.mp3';
-        a.click();
-        URL.revokeObjectURL(blobUrl);
-
+        //TODO
     }
 
     handleWorkerMessages(event) {
         // this.saveRecording(event.data.blob);
-        const { buffers } = event.data;
-
+        const { buffers, blob } = event.data;
+        this.saveRecording(blob);
         this.waveformVisualizer.drawBuffer(buffers[0]);
     }
 
