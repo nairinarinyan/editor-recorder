@@ -1,7 +1,7 @@
 import { getElements, toggleClasses, initTouchEventHandlers } from './dom';
 import Recorder from './recorder';
 
-const [button, canvas, controlPanel] = getElements('#record-button', '#canvas', '#control-panel');
+const [button, canvas, controlPanel] = getElements('#record-button', '#canvas', '.control-panel.record');
 
 const canvasCtx = canvas.getContext('2d');
 
