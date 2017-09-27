@@ -10,7 +10,6 @@ canvas.width = window.innerWidth * .9;
 
 const recorder = new Recorder(canvasCtx);
 const drawProgress = new DrawProgress();
-const canvasCtx = canvas.getContext('2d');
 
 canvas.width = window.innerWidth * .9;
 
