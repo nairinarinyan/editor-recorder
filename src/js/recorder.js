@@ -13,7 +13,21 @@ export default class Recorder {
     }
 
     saveRecording(blob){
-        //TODO
+        // send it to server
+        let data = new FormData();
+        let xhr = new XMLHttpRequest();
+
+        data.append("audio", blob, "record.mp3");
+      
+        xhr.open("POST", "http://localhost:3000/");
+        xhr.onload = () => {
+            if (xhr.status == 204) {
+                console.log("Uploaded");
+            } else {
+                console.error(`Error ${xhr.status}. upload failed`);
+            }
+        };
+        xhr.send(data);
     }
 
     handleWorkerMessages(event) {
