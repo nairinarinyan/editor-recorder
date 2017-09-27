@@ -28,7 +28,9 @@ const server = http.createServer((req, res) => {
 
 const usbMonitor = new UsbMonitor();
 
-usbMonitor.watchFor(Config.USB_VENDOR_ID,Config.USB_DEVICE_ID, (unmount)=>{
+//usbMonitor.watchFor(Config.USB_VENDOR_ID,Config.USB_DEVICE_ID, (unmount)=>{
+
+usbMonitor.watchForAnythingThatMoves((unmount)=>{
     console.log('HEY USB', unmount);
     if (!unmount) {
         setTimeout(() => {

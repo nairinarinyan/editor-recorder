@@ -17,6 +17,17 @@ class UsbMonitor {
             }
         });
     }
+
+    watchForAnythingThatMoves(callback){
+        monitor.add((device) => {
+            console.log('Device added!', device);
+            callback(false);
+        });
+        monitor.remove((device) => {
+            callback(true);
+        });
+    }
+
     getUsbDrives(deviceNameSearch) {
         return new Promise((resolve, reject) => {
             drivelist.list((error, disks) => {
