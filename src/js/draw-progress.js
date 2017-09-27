@@ -8,6 +8,7 @@ export default class DrawProgress {
         this.circle = timerBar;
         this.radius = parseInt(timerBar.getAttribute('r'), 10);
         this.c = 2 * Math.PI * this.radius;
+        this.circleDashoffset = window.getComputedStyle(this.circle);
     }
 
     getPercentage(value) {
@@ -17,16 +18,17 @@ export default class DrawProgress {
     play() {
         this.isRunning = true;
         this.timer = setInterval(() => {
-            this.progress = this.progress - 10;
-            this.setProgress(this.progress);
+            if (this.circleDashoffset.getPropertyValue('stroke-dashoffset') === '-360px') {
+                this.stop();
+            }
         }, 1000);
+      
     }
 
     stop() {
         this.isRunning = false;
         clearInterval(this.timer);
         this.timer = null;
-        this.setProgress(100);
     }
    
     setProgress(value) {

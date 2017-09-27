@@ -11,15 +11,19 @@ canvas.width = window.innerWidth * .9;
 const recorder = new Recorder(canvasCtx);
 const drawProgress = new DrawProgress();
 
+canvas.width = window.innerWidth * .9;
+
 controlPanel.addEventListener('click', () => {
     toggleClasses('recording', button, controlPanel);
 
     if (!recorder.isRunning) {
         recorder.start();
-        // drawProgress.play();
+        drawProgress.play();
+        controlPanel.className = '';
     } else {
         recorder.stop();
-        // drawProgress.stop();
+        drawProgress.stop();
+        controlPanel.className = 'record-finished';
     }
 });
 
