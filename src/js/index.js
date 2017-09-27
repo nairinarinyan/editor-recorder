@@ -3,7 +3,8 @@ import Recorder from './recorder';
 
 const [button, canvas] = getElements('#record-button', '#canvas');
 
-const recorder = new Recorder();
+const canvasCtx = canvas.getContext('2d');
+const recorder = new Recorder(canvasCtx);
 
 button.addEventListener('click', () => {
     toggleClasses('recording', button, button.firstElementChild);
