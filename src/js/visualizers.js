@@ -7,13 +7,30 @@ export class FrequencyVisualizer {
         analyserNode.fftSize = 256;
         const bufferLength = analyserNode.frequencyBinCount;
 
-        this.analysedDataBuffer = new Uint8Array(bufferLength);
-        analyserNode.getByteFrequencyData(this.analysedDataBuffer);
+        const analysedDataBuffer = new Uint8Array(bufferLength);
 
-        this.draw();
-    }
+        const { width, height } = this.canvasCtx.canvas;
+        const { canvasCtx } = this;
+        canvasCtx.fillStyle = '#00b2eb';
 
-    draw(time) {
-        requestAnimationFrame(this.draw.bind(this));
+        function draw() {
+            requestAnimationFrame(draw);
+            analyserNode.getByteFrequencyData(analysedDataBuffer);
+            canvasCtx.clearRect(0, 0, width, height);
+
+            var barWidth = (width / bufferLength) * 2.5;
+            var barHeight;
+            var x = 0; 
+
+            for(var i = 0; i < bufferLength; i++) {
+                barHeight = analysedDataBuffer[i]/2;
+
+                canvasCtx.fillRect(x,height-barHeight/2,barWidth,barHeight);
+
+                x += barWidth + 1;
+            }
+        }
+
+        draw();
     }
 }
