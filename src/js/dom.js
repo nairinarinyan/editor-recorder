@@ -10,6 +10,7 @@ export function initTouchEventHandlers(canvas, cb) {
     const parent = canvas.parentElement;
     let touched = false;
     let initialPosition;
+    let delta;
     const overLayElement = document.querySelector('.overlay');
     const boundingBox = parent.getBoundingClientRect(); 
 
@@ -22,9 +23,12 @@ export function initTouchEventHandlers(canvas, cb) {
 
     parent.addEventListener('touchend', evt => {
         const startRatio =  (initialPosition - boundingBox.left) / boundingBox.width;
-        const endRatio =  (x - boundingBox.left) / boundingBox.width;
 
-        cb(startRatio, endRatio);
+        // const endRatio =  (x - boundingBox.left) / boundingBox.width;
+
+        const durationRatio = delta / boundingBox.width;
+
+        cb(startRatio, durationRatio);
 
         touched = false;
     });
@@ -42,7 +46,7 @@ export function initTouchEventHandlers(canvas, cb) {
                 x = boundingBox.width + boundingBox.left;
             }
 
-            let delta = x - initialPosition;
+            delta = x - initialPosition;
 
             requestAnimationFrame(() => {
                 overLayElement.style.width = delta + 'px';

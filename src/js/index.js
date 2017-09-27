@@ -23,6 +23,7 @@ controlPanel.addEventListener('click', () => {
     }
 });
 
-initTouchEventHandlers(canvas, (startRatio, endRatio) => {
-    
+initTouchEventHandlers(canvas, (startRatio, durationRatio) => {
+    recorder.setBufferPositions(startRatio, durationRatio);
+    recorder.playFromPosition();
 });

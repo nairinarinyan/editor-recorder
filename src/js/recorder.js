@@ -12,6 +12,7 @@ export default class Recorder {
 
         this.frequencyVisualizer = new FrequencyVisualizer(canvasCtx);
         this.waveformVisualizer = new WaveformVisualizer(canvasCtx);
+        this.buffers = [];
     }
 
     saveRecording(blob){
@@ -35,15 +36,20 @@ export default class Recorder {
     handleWorkerMessages(event) {
         // this.saveRecording(event.data.blob);
         const { buffers, blob } = event.data;
+        this.combinedBuffers = buffers;
+
         this.saveRecording(blob);
         this.waveformVisualizer.drawBuffer(buffers[0]);
     }
 
     getBuffers(event) {
-        var buffers = [];
-        for (var ch = 0; ch < 2; ++ch)
-            buffers[ch] = event.inputBuffer.getChannelData(ch);
-        return buffers;
+        this.buffers = [];
+
+        for (var ch = 0; ch < 2; ++ch) {
+            this.buffers[ch] = event.inputBuffer.getChannelData(ch);
+        }
+
+        return this.buffers;
     }
 
     start() {
@@ -72,16 +78,16 @@ export default class Recorder {
             const analyserNode = this.audioCtx.createAnalyser();
             const compressorNode = this.setupCompressor();
 
-            const muteNode = this.audioCtx.createGain();
-            muteNode.gain.value = 0.0;
+            this.volumeControlNode = this.audioCtx.createGain();
+            this.volumeControlNode.gain.value = 0.0;
             const processor = this.audioCtx.createScriptProcessor(0, 2, 2);
 
             inputNode.connect(analyserNode);
             analyserNode.connect(compressorNode);
             compressorNode.connect(processor);
-            processor.connect(muteNode);
+            processor.connect(this.volumeControlNode);
             
-            muteNode.connect(this.audioCtx.destination);
+            this.volumeControlNode.connect(this.audioCtx.destination);
 
             this.worker.postMessage({
                 command: 'start',
@@ -114,5 +120,30 @@ export default class Recorder {
         this.worker.postMessage({ command:'finish' });
         this.audioStream && this.audioStream.getAudioTracks()[0].stop();
         this.isRunning = false;
+    }
+
+    setBufferPositions(startRatio, durationRatio) {
+        this.startRatio = startRatio;
+        this.durationRatio = durationRatio;
+    }
+
+    playFromPosition() {
+        const source = this.audioCtx.createBufferSource();
+        const audioBuffer = this.audioCtx.createBuffer(2, this.combinedBuffers[0].length, 44100);
+
+        const leftChannel = audioBuffer.getChannelData(0);
+        const rightChannel = audioBuffer.getChannelData(1);
+
+        leftChannel.set(this.combinedBuffers[0]);
+        rightChannel.set(this.combinedBuffers[1]);
+
+        source.buffer = audioBuffer;
+
+        source.connect(this.audioCtx.destination);
+
+        const offset = source.buffer.duration * this.startRatio;
+        const duration = this.durationRatio * source.buffer.duration;
+
+        source.start(0, offset, duration);
     }
 }
