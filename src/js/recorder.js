@@ -11,17 +11,6 @@ export default class Recorder {
         this.frequencyVisualizer = new FrequencyVisualizer(canvasCtx);
     }
 
-    initializeBuffer(audioContext){
-        // processor buffer size
-
-        let defaultBufSz = (function() {
-            let processor = audioContext.createScriptProcessor(undefined, 2, 2);
-            return processor.bufferSize;
-        })();
-
-        this.bufferSize = defaultBufSz;
-    }
-
     saveRecording(blob){
         let blobUrl = URL.createObjectURL(blob);
         console.log('Got a recoding at', blobUrl);
@@ -44,7 +33,6 @@ export default class Recorder {
 
     start() {
         this.audioCtx = new AudioContext();
-        this.initializeBuffer(this.audioCtx);
 
         navigator.mediaDevices.getUserMedia({
             video: false,
@@ -71,7 +59,7 @@ export default class Recorder {
 
             const muteNode = this.audioCtx.createGain();
             muteNode.gain.value = 0.0;
-            const processor = this.audioCtx.createScriptProcessor(this.bufferSize, 2, 2);
+            const processor = this.audioCtx.createScriptProcessor(0, 2, 2);
 
             inputNode.connect(compressorNode);
             compressorNode.connect(analyserNode);
