@@ -10,6 +10,9 @@ canvas.width = window.innerWidth * .9;
 
 const recorder = new Recorder(canvasCtx);
 const drawProgress = new DrawProgress();
+const canvasCtx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth * .9;
 
 controlPanel.addEventListener('click', () => {
     toggleClasses('recording', button, controlPanel);
@@ -26,3 +29,4 @@ controlPanel.addEventListener('click', () => {
 initTouchEventHandlers(canvas, (startRatio, endRatio) => {
     
 });
+

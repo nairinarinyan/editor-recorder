@@ -68,7 +68,7 @@ body {
     stroke-linecap: round;
     fill: none;
     stroke-dashoffset: 0;
-    stroke-dasharray: 565.48px;
+    stroke-dasharray: 1000;
     
 }
 
@@ -78,10 +78,10 @@ body {
 
 @keyframes dash {
     from {
-      stroke-dashoffset: 565.48px;
+      stroke-dashoffset: 0;
     }
     to {
-      stroke-dashoffset: 0;
+      stroke-dashoffset: -1000;
     }
   }
 
