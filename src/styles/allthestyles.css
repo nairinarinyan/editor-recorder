@@ -42,12 +42,10 @@ body {
 }
 
 #record-button circle {
-    stroke-dashoffset: 0;
-    transition: stroke-dashoffset 1s linear;
     stroke-width: 0.3em;
 }
 
-#record-button #bar {
+#record-button #timer-bar {
     stroke: #00b2eb;
 }
 
