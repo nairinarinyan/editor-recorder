@@ -1,10 +1,13 @@
 export default class Recorder {
+
     constructor() {
         this.isRunning = false;
+        this.worker = new Worker('lame/EncoderWorker.js');
     }
 
     start() {
         this.audioCtx = new AudioContext();
+
         navigator.mediaDevices.getUserMedia({
             video: false,
             audio: {
@@ -16,7 +19,6 @@ export default class Recorder {
                 channelCount:1,
                 googHighpassFilter: true,
                 googTypingNoiseDetection: true,
-                echoCancellation: true,
                 sampleSize: 16,
                 sampleRate: 16000
             }
@@ -38,7 +40,6 @@ export default class Recorder {
             muteNode.connect(this.audioCtx.destination);
         })
         .catch(console.error);
-
     }
     
     stop() {
