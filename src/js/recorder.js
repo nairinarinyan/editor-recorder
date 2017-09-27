@@ -8,12 +8,19 @@ export default class Recorder {
         this.worker = new Worker('lame/EncoderWorker.js');
         this.worker.onmessage = this.handleWorkerMessages.bind(this);
 
+        this.saveMp3Url = 'http://localhost:4044/sound';
+
         this.frequencyVisualizer = new FrequencyVisualizer(canvasCtx);
         this.waveformVisualizer = new WaveformVisualizer(canvasCtx);
     }
 
     saveRecording(blob){
-        //TODO
+        var r = new XMLHttpRequest();
+        r.open("PUT", this.saveMp3Url, true);
+        r.onload = function (e) {
+            console.log('UPLOAD COMPLETE');
+        };
+        r.send(blob);
     }
 
     handleWorkerMessages(event) {
