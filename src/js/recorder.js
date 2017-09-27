@@ -4,12 +4,21 @@ export default class Recorder {
     }
 
     start() {
-        this.isRunning = true;
-        console.log('recording, yaay!');
+        this.audioCtx = new AudioContext();
+
+        navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+            .then(stream => {
+                this.audioStream = stream;
+                this.isRunning = true;
+
+                const input = this.audioCtx.createMediaStreamSource(stream);
+                input.connect(this.audioCtx.destination);
+            })
+            .catch(console.error);
     }
 
     stop() {
+        this.audioStream && this.audioStream.getAudioTracks()[0].stop();
         this.isRunning = false;
-        console.log('enough of it');
     }
 }

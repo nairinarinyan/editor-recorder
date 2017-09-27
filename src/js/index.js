@@ -8,5 +8,7 @@ const recorder = new Recorder();
 button.addEventListener('click', () => {
     toggleClasses('recording', button, button.firstElementChild);
 
-    !recorder.isRunning ? recorder.start() : recorder.stop();
+    !recorder.isRunning ?
+        recorder.start() :
+        recorder.stop();
 });
