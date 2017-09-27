@@ -12,14 +12,36 @@
             <canvas id="canvas"></canvas>
             <div class="overlay"></div>
         </div>
-        <div id="control-panel">
-            <svg id="record-button" width="90" height="90" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                <circle id="bar" r="40" cx="45" cy="45" fill="transparent" stroke-dasharray="565.48" stroke-dashoffset="30"></circle>
-                <circle class="button" r="35" cx="45" cy="45" fill="#00b2eb" stroke-dasharray="565.48" stroke-dashoffset="30"></circle>
-            </svg>
-            <img src="src/icons/microphone.svg" class="record-icon" />
-            <img src="src/icons/stop.svg" class="stop-icon" />
+
+        <div class="controls">
+            <div class="control-panel small">
+                <svg class="button-svg" width="90" height="90" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                    <circle class="bar" r="35" cx="45" cy="45" fill="transparent" stroke-dasharray="565.48" stroke-dashoffset="30"></circle>
+                    <circle class="button" r="30" cx="45" cy="45" fill="#00b2eb" stroke-dasharray="565.48" stroke-dashoffset="30"></circle>
+                </svg>
+                <img src="src/icons/crop.svg" class="record-icon" />
+            </div>
+
+            <div class="control-panel record">
+                <svg class="button-svg" id="record-button" width="90" height="90" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                    <circle class="bar" r="40" cx="45" cy="45" fill="transparent" stroke-dasharray="565.48" stroke-dashoffset="30"></circle>
+                    <circle class="button" r="35" cx="45" cy="45" fill="#00b2eb" stroke-dasharray="565.48" stroke-dashoffset="30"></circle>
+                </svg>
+                <img src="src/icons/microphone.svg" class="record-icon" />
+                <img src="src/icons/stop.svg" class="stop-icon" />
+            </div>
+
+            <div class="control-panel small">
+                <svg class="button-svg" width="90" height="90" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                    <circle class="bar" r="35" cx="45" cy="45" fill="transparent" stroke-dasharray="565.48" stroke-dashoffset="30"></circle>
+                    <circle class="button" r="30" cx="45" cy="45" fill="#00b2eb" stroke-dasharray="565.48" stroke-dashoffset="30"></circle>
+                </svg>
+                <img src="src/icons/play.svg" class="record-icon" />
+                <img src="src/icons/stop.svg" class="stop-icon" />
+            </div>
+
         </div>
+
     </div> 
     <script src="build/bundle.js"></script>
 </body>
