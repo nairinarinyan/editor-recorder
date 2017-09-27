@@ -71,7 +71,7 @@ export default class Recorder {
                 var compressor = this.setupCompressor();
 
                 input.connect(compressor);
-                compressor.connct(analyser);
+                compressor.connect(analyser);
                 analyser.connect(muteNode);
                 muteNode.connect(this.audioCtx.destination);
 
