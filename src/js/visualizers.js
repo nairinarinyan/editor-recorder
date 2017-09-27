@@ -4,7 +4,7 @@ export class FrequencyVisualizer {
     }
 
     startDrawing(analyserNode) {
-        analyserNode.fftSize = 256;
+        analyserNode.fftSize = 64;
         const bufferLength = analyserNode.frequencyBinCount;
 
         const analysedDataBuffer = new Uint8Array(bufferLength);
@@ -14,21 +14,22 @@ export class FrequencyVisualizer {
         canvasCtx.fillStyle = '#00b2eb';
 
         function draw() {
-            requestAnimationFrame(draw);
             analyserNode.getByteFrequencyData(analysedDataBuffer);
             canvasCtx.clearRect(0, 0, width, height);
 
-            var barWidth = (width / bufferLength) * 2.5;
+            var barWidth = (width / bufferLength) * 2;
             var barHeight;
             var x = 0; 
 
             for(var i = 0; i < bufferLength; i++) {
-                barHeight = analysedDataBuffer[i]/2;
+                barHeight = analysedDataBuffer[i];
 
                 canvasCtx.fillRect(x,height-barHeight/2,barWidth,barHeight);
 
-                x += barWidth + 1;
+                x += barWidth + 5;
             }
+
+            requestAnimationFrame(draw);
         }
 
         draw();

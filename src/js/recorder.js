@@ -61,9 +61,9 @@ export default class Recorder {
             muteNode.gain.value = 0.0;
             const processor = this.audioCtx.createScriptProcessor(0, 2, 2);
 
-            inputNode.connect(compressorNode);
-            compressorNode.connect(analyserNode);
-            analyserNode.connect(processor);
+            inputNode.connect(analyserNode);
+            analyserNode.connect(compressorNode);
+            compressorNode.connect(processor);
             processor.connect(muteNode);
             
             muteNode.connect(this.audioCtx.destination);
