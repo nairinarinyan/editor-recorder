@@ -18,10 +18,12 @@ controlPanel.addEventListener('click', () => {
 
     if (!recorder.isRunning) {
         recorder.start();
-        // drawProgress.play();
+        drawProgress.play();
+        controlPanel.className = '';
     } else {
         recorder.stop();
-        // drawProgress.stop();
+        drawProgress.stop();
+        controlPanel.className = 'record-finished';
     }
 });
 
