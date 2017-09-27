@@ -14,6 +14,20 @@ body {
     justify-content: space-around;
 }
 
+.canvas-wrapper {
+    display: flex;
+    position: relative;
+}
+
+.overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 158, 208, .3);
+}
+
 .button {
     display: flex;
     align-items: center;
