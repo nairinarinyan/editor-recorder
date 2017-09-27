@@ -1,4 +1,4 @@
-import { FrequencyVisualizer } from './visualizers';
+import { FrequencyVisualizer, WaveformVisualizer } from './visualizers';
 
 export default class Recorder {
     constructor(canvasCtx) {
@@ -6,9 +6,10 @@ export default class Recorder {
         this.bitRate = 64;
         this.isRunning = false;
         this.worker = new Worker('lame/EncoderWorker.js');
-        this.worker.onmessage = (event) => { this.saveRecording(event.data.blob); };
+        this.worker.onmessage = this.handleWorkerMessages.bind(this);
 
         this.frequencyVisualizer = new FrequencyVisualizer(canvasCtx);
+        this.waveformVisualizer = new WaveformVisualizer(canvasCtx);
     }
 
     saveRecording(blob){
@@ -22,6 +23,13 @@ export default class Recorder {
         a.click();
         URL.revokeObjectURL(blobUrl);
 
+    }
+
+    handleWorkerMessages(event) {
+        // this.saveRecording(event.data.blob);
+        const { buffers } = event.data;
+
+        this.waveformVisualizer.drawBuffer(buffers[0]);
     }
 
     getBuffers(event) {
