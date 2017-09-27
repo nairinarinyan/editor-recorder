@@ -61,38 +61,48 @@ export default class Recorder {
             }
         )
             .then(stream => {
-            this.audioStream = stream;
-        this.isRunning = true;
+                this.audioStream = stream;
+                this.isRunning = true;
 
-        const input = this.audioCtx.createMediaStreamSource(stream);
+                const input = this.audioCtx.createMediaStreamSource(stream);
+                const analyser = this.audioCtx.createAnalyser();
+                const muteNode = this.audioCtx.createGain();
+                muteNode.gain.value = 0.0;
+                var compressor = this.setupCompressor();
 
-        var compressor = this.audioCtx.createDynamicsCompressor();
+                input.connect(compressor);
+                compressor.connct(analyser);
+                analyser.connect(muteNode);
+                muteNode.connect(this.audioCtx.destination);
+
+                let processor = this.audioCtx.createScriptProcessor(this.bufferSize, 2, 2);
+                input.connect(processor);
+                processor.connect(this.audioCtx.destination);
+
+                this.worker.postMessage({
+                    command: 'start',
+                    process: 'separate',
+                    sampleRate: this.audioCtx.sampleRate,
+                    bitRate: this.bitRate
+                });
+                processor.onaudioprocess = (event) => {
+                    this.worker.postMessage({ command: 'record', buffers: this.getBuffers(event) });
+                };
+
+
+
+            }).catch(console.error);
+    }
+
+    setupCompressor() {
+        const compressor = this.audioCtx.createDynamicsCompressor();
         compressor.threshold.value = -50;
         compressor.knee.value = 40;
         compressor.ratio.value = 12;
         compressor.attack.value = 0;
         compressor.release.value = 0.25;
 
-        input.connect(compressor);
-        compressor.connect(this.audioCtx.destination);
-
-        let processor = this.audioCtx.createScriptProcessor(this.bufferSize, 2, 2);
-        input.connect(processor);
-        processor.connect(this.audioCtx.destination);
-
-        this.worker.postMessage({
-            command: 'start',
-            process: 'separate',
-            sampleRate: this.audioCtx.sampleRate,
-            bitRate: this.bitRate
-        });
-        processor.onaudioprocess = (event) => {
-            this.worker.postMessage({ command: 'record', buffers: this.getBuffers(event) });
-        };
-
-
-
-    }).catch(console.error);
+        return compressor;
     }
 
     stop() {
