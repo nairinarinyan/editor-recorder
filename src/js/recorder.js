@@ -122,8 +122,9 @@ export default class Recorder {
         this.isRunning = false;
     }
 
-    setBufferPositions(startRatio, durationRatio) {
+    setBufferPositions(startRatio, endRatio, durationRatio) {
         this.startRatio = startRatio;
+        this.endRatio = endRatio;
         this.durationRatio = durationRatio;
     }
 
@@ -145,5 +146,24 @@ export default class Recorder {
         const duration = this.durationRatio * source.buffer.duration;
 
         source.start(0, offset, duration);
+
+        this.trim();
+    }
+
+    trim() {
+        const bufferLength = this.durationRatio * this.combinedBuffers[0].length;
+
+        const audioBuffer = this.audioCtx.createBuffer(2, bufferLength, 44100);
+
+        let leftChannel = audioBuffer.getChannelData(0);
+        let rightChannel = audioBuffer.getChannelData(1);
+
+        const trimmedLeftChannel = leftChannel.slice(this.startRatio * bufferLength << 0, this.endRatio * bufferLength << 0);
+        const trimmedRightChannel = rightChannel.slice(this.startRatio * bufferLength << 0, this.endRatio * bufferLength << 0);
+
+        leftChannel.set(trimmedLeftChannel);
+        rightChannel.set(trimmedRightChannel);
+
+        this.worker.postMessage({ command: 'finish', buffers: [[leftChannel, rightChannel]] });
     }
 }

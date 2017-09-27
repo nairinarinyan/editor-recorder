@@ -6,6 +6,8 @@ var buffers = undefined,
       recBuffersR = [],
     recLength = 0;
 
+var sampleRate, bitRate;
+
 function mergeBuffers(recBuffers, recLength){
     var result = new Float32Array(recLength);
     var offset = 0;
@@ -32,6 +34,9 @@ self.onmessage = function(event) {
 
     switch (data.command) {
         case 'start':
+            sampleRate = data.sampleRate;
+            bitRate = data.bitRate;
+
             encoder = new Mp3LameEncoder(data.sampleRate, data.bitRate);
             buffers = data.process === 'separate' ? [] : undefined;
             break;
@@ -52,13 +57,18 @@ self.onmessage = function(event) {
         case 'finish':
             let buf = getBuffers();
 
-            if (buffers != null) {
-                while (buffers.length > 0) {
-                    encoder.encode(buffers.shift());
+            if (data.buffers) {
+                encoder = new Mp3LameEncoder(sampleRate, bitRate);
+            }
+
+            let bufferz = data.buffers || buffers;
+
+            if (bufferz != null) {
+                while (bufferz.length > 0) {
+                    encoder.encode(bufferz.shift());
                 }
             }
             self.postMessage({ buffers: buf, blob: encoder.finish() });
-            encoder = undefined;
             break;
         case 'cancel':
             encoder.cancel();

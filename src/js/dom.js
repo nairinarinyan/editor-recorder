@@ -24,11 +24,11 @@ export function initTouchEventHandlers(canvas, cb) {
     parent.addEventListener('touchend', evt => {
         const startRatio =  (initialPosition - boundingBox.left) / boundingBox.width;
 
-        // const endRatio =  (x - boundingBox.left) / boundingBox.width;
+        const endRatio =  (x - boundingBox.left) / boundingBox.width;
 
         const durationRatio = delta / boundingBox.width;
 
-        cb(startRatio, durationRatio);
+        cb(startRatio, endRatio, durationRatio);
 
         touched = false;
     });
