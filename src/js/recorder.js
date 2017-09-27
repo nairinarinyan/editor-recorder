@@ -8,19 +8,28 @@ export default class Recorder {
         this.worker = new Worker('lame/EncoderWorker.js');
         this.worker.onmessage = this.handleWorkerMessages.bind(this);
 
-        this.saveMp3Url = 'http://localhost:4044/sound';
+        this.saveMp3Url = 'http://localhost:3000';
 
         this.frequencyVisualizer = new FrequencyVisualizer(canvasCtx);
         this.waveformVisualizer = new WaveformVisualizer(canvasCtx);
     }
 
     saveRecording(blob){
-        var r = new XMLHttpRequest();
-        r.open("PUT", this.saveMp3Url, true);
-        r.onload = function (e) {
-            console.log('UPLOAD COMPLETE');
+        // send it to server
+        let data = new FormData();
+        let xhr = new XMLHttpRequest();
+
+        data.append("audio", blob, "record.mp3");
+
+        xhr.open("POST", this.saveMp3Url);
+        xhr.onload = () => {
+            if (xhr.status == 204) {
+                console.log("Uploaded");
+            } else {
+                console.error(`Error ${xhr.status}. upload failed`);
+            }
         };
-        r.send(blob);
+        xhr.send(data);
     }
 
     handleWorkerMessages(event) {

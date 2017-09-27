@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm-run-all -p bundle serve",
+    "start": "npm-run-all -p bundle serve-static server",
     "bundle": "rollup src/js/index.js --format iife --output build/bundle.js --watch",
-    "serve": "http-server -c-1"
+    "serve-static": "http-server -c-1",
+    "server": "node server/"
   },
   "repository": {
     "type": "git",
