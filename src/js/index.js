@@ -17,4 +17,6 @@ controlPanel.addEventListener('click', () => {
         recorder.stop();
 });
 
-initTouchEventHandlers(canvas);
+initTouchEventHandlers(canvas, (startRatio, endRatio) => {
+      
+});

@@ -6,25 +6,31 @@ export function getElements(...selectors) {
     return selectors.map(selector => document.querySelector(selector));
 }
 
-export function initTouchEventHandlers(canvas) {
+export function initTouchEventHandlers(canvas, cb) {
     const parent = canvas.parentElement;
     let touched = false;
     let initialPosition;
     const overLayElement = document.querySelector('.overlay');
     const boundingBox = parent.getBoundingClientRect(); 
 
+    let x;
+
     parent.addEventListener('touchstart', () => {
-        console.log('touchstart');
+        // console.log('touchstart');
         touched = true;
     });
 
-    parent.addEventListener('touchend', () => {
-        console.log('touchend');
+    parent.addEventListener('touchend', evt => {
+        const startRatio =  (initialPosition - boundingBox.left) / boundingBox.width;
+        const endRatio =  (x - boundingBox.left) / boundingBox.width;
+
+        cb(startRatio, endRatio);
+
         touched = false;
     });
 
     parent.addEventListener('touchmove', evt => {
-        const x = evt.changedTouches[0].clientX;
+        x = evt.changedTouches[0].clientX;
 
         if (!initialPosition) {
             initialPosition = x;
@@ -32,6 +38,10 @@ export function initTouchEventHandlers(canvas) {
             overLayElement.style.display = 'block';
             overLayElement.style.width = 0;
         } else {
+            if (x > boundingBox.left + boundingBox.width) {
+                x = boundingBox.width + boundingBox.left;
+            }
+
             let delta = x - initialPosition;
 
             requestAnimationFrame(() => {
