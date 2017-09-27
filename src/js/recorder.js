@@ -8,6 +8,8 @@ export default class Recorder {
         this.worker = new Worker('lame/EncoderWorker.js');
         this.worker.onmessage = this.handleWorkerMessages.bind(this);
 
+        this.saveMp3Url = 'http://localhost:3000';
+
         this.frequencyVisualizer = new FrequencyVisualizer(canvasCtx);
         this.waveformVisualizer = new WaveformVisualizer(canvasCtx);
     }
@@ -18,8 +20,8 @@ export default class Recorder {
         let xhr = new XMLHttpRequest();
 
         data.append("audio", blob, "record.mp3");
-      
-        xhr.open("POST", "http://localhost:3000/");
+
+        xhr.open("POST", this.saveMp3Url);
         xhr.onload = () => {
             if (xhr.status == 204) {
                 console.log("Uploaded");
