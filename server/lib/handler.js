@@ -1,19 +1,22 @@
-export class requestHandler {
-    contentBody = [];
+const Saver = require('./saver');
+
+class requestHandler {
+    constructor(){
+        this.saver = new Saver();
+    }
+
     proccess(request) {
         request.on('error', (err) => {
             console.error(err);
         }).on('data', (chunk) => {
-            this.contentBody.push(chunk);
+            this.saver.saveChunk(chunk);
         }).on('end', () => {
-            let body = Buffer.concat(this.contentBody).toString();
-            
-            // store it on file system
+            this.saver.done();
         });
     }
 };
 
-export function handle(req) {
+module.exports = function(req) {
     const handler = new requestHandler();
 
     return handler.proccess(req);
