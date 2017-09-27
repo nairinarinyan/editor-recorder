@@ -1,13 +1,15 @@
 export default class Recorder {
+
     constructor() {
         this.isRunning = false;
+        this.worker = new Worker('lame/EncoderWorker.js');
     }
 
     start() {
         this.audioCtx = new AudioContext();
         navigator.mediaDevices.getUserMedia(
             {
-                video: true,
+                video: false,
                 audio: {
                     echoCancellation: true, // disabling audio processing
                     googAutoGainControl: true,
@@ -39,9 +41,7 @@ export default class Recorder {
         input.connect(compressor);
         compressor.connect(this.audioCtx.destination);
 
-    })
-    .
-        catch(console.error);
+    }).catch(console.error);
     }
 
     stop() {
