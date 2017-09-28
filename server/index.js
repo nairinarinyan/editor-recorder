@@ -3,8 +3,9 @@ const UsbMonitor = require('./lib/UsbMonitor');
 const requestHandler = require('./lib/handler');
 const port = process.env.PORT || 3000;
 const Config = require('./lib/config');
-const fs = require('fs');
+const fs = require('fs-extra');
 const path = require('path');
+const { exec } = require('child_process');
 
 
 const server = http.createServer((req, res) => {
@@ -37,15 +38,20 @@ usbMonitor.watchForAnythingThatMoves((unmount)=>{
             usbMonitor.getUsbDrives(Config.USB_DRIVE_DESCRIPTOR).then((drives) => {
                 if (drives && drives.length > 0) {
                     let drive = drives[0], savePath = drive.mountpoints[0].path;
-                    //Store in root of drive
-                    console.log(savePath);
-                    let p = path.join(savePath,'sound.mp3');
-                    if (fs.existsSync(Config.SOUND_FILE_NAME)) {
-                        fs.createReadStream(Config.SOUND_FILE_NAME).pipe(fs.createWriteStream(p));
-                        fs.unlinkSync(Config.SOUND_FILE_NAME);
-                    } else {
-                        console.log('NOTHING TO BURN');
-                    }
+                    //Format the drive
+                    exec(`format ${savePath.replace('\\','')} /FS:FAT /V:USB /Q /X /Y`,{},()=>{
+                        //Store in root of drive
+                        let p = path.join(savePath,'sound.mp3');
+                        console.log(p);
+                        if (fs.pathExistsSync(p)){
+                            fs.removeSync(p);
+                        }
+                        if (fs.pathExistsSync(Config.SOUND_FILE_NAME)) {
+                            fs.copySync(Config.SOUND_FILE_NAME, p);
+                        } else {
+                            console.log('NOTHING TO BURN');
+                        }
+                    });
                 }
             }).catch((e) => {
                 console.warn(e);
