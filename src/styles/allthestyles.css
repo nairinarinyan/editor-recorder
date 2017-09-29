@@ -58,6 +58,7 @@ body {
 #record-button {
     transform: rotate(-90deg);
     background: #fff;
+    border-radius: 50%;
 }
 
 #record-button circle {
