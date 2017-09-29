@@ -63,11 +63,11 @@ export default class Recorder {
                 autoGainControl: true,
                 googNoiseSuppression: true,
                 noiseSuppression: true,
-                channelCount:1,
+                channelCount:2,
                 googHighpassFilter: true,
                 googTypingNoiseDetection: true,
                 sampleSize: 16,
-                sampleRate: 16000
+                sampleRate: 44100
             }
         })
         .then(stream => {
@@ -82,9 +82,14 @@ export default class Recorder {
             this.volumeControlNode.gain.value = 0.0;
             const processor = this.audioCtx.createScriptProcessor(0, 2, 2);
 
+
+            const gainNode = this.audioCtx.createGain();
+            gainNode.gain.value = 5.0;
+
             inputNode.connect(analyserNode);
             analyserNode.connect(compressorNode);
-            compressorNode.connect(processor);
+            compressorNode.connect(gainNode);
+            gainNode.connect(processor);
             processor.connect(this.volumeControlNode);
             
             this.volumeControlNode.connect(this.audioCtx.destination);
