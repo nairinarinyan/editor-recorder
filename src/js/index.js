@@ -19,11 +19,13 @@ controlPanel.addEventListener('click', () => {
     if (!recorder.isRunning) {
         recorder.start();
         drawProgress.play();
-        controlPanel.className = '';
+        if ( controlPanel.classList.contains('record-finished') ) {
+            controlPanel.classList.remove('record-finished');
+        }
     } else {
         recorder.stop();
         drawProgress.stop();
-        controlPanel.className = 'record-finished';
+        controlPanel.classList.add('record-finished');
     }
 });
 

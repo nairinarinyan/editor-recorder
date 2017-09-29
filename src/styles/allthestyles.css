@@ -99,6 +99,10 @@ body {
     height: 30px;
 }
 
+#control-panel .stop-icon {
+    display: none;
+}
+
 #control-panel.recording .record-icon {
     display: none;
 }
@@ -107,12 +111,8 @@ body {
     display: block;
 }
 
-#control-panel .stop-icon {
-    display: none;
-}
 
 #control-panel .buttons {
-    z-index: -1;
     position: absolute;
     top: 22px;
     left: 23px;
