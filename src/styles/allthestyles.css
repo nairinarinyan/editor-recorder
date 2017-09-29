@@ -136,17 +136,17 @@ body {
     background-size: 50%;
 }
 
-#control-panel.record-finished .crop-btn {
-    left: -80px;
-}
-
-#control-panel.record-finished .play-btn {
+#control-panel.record-finished .ok-btn {
     left: 80px;
 }
 
-#control-panel .crop-btn {
+#control-panel.record-finished .play-btn {
+    left: -80px;
+}
+
+#control-panel .ok-btn {
     left: 0;
-    background-image: url(../icons/crop.svg);
+    background-image: url(../icons/ok.svg);
 }
 
 #control-panel .play-btn {
