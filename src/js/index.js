@@ -2,7 +2,7 @@ import { getElements, toggleClasses, initTouchEventHandlers } from './dom';
 import Recorder from './recorder';
 import DrawProgress from './draw-progress'
 
-const [recordButton, canvas, controlPanel] = getElements('#record-button', '#canvas', '#control-panel');
+const [recordButton, canvas, controlPanel, playButton, okButton] = getElements('#record-button', '#canvas', '#control-panel', '.play-btn', '.ok-btn');
 
 const canvasCtx = canvas.getContext('2d');
 
@@ -29,7 +29,16 @@ recordButton.addEventListener('click', () => {
     }
 });
 
+playButton.addEventListener('click', evt => {
+    evt.stopPropagation();
+    recorder.play(); 
+});
+
+okButton.addEventListener('click', evt => {
+    evt.stopPropagation();
+    recorder.saveRecording(); 
+});
+
 initTouchEventHandlers(canvas, (startRatio, endRatio, durationRatio) => {
     recorder.setBufferPositions(startRatio, endRatio, durationRatio);
-    recorder.playFromPosition();
 });

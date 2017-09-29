@@ -15,12 +15,16 @@ export default class Recorder {
         this.buffers = [];
     }
 
-    saveRecording(blob){
+    saveBlob(blob) {
+        this.currentBlob = blob; 
+    }
+
+    saveRecording(){
         // send it to server
         let data = new FormData();
         let xhr = new XMLHttpRequest();
 
-        data.append("audio", blob, "record.mp3");
+        data.append("audio", this.currentBlob, "record.mp3");
 
         xhr.open("POST", this.saveMp3Url);
         xhr.onload = () => {
@@ -38,7 +42,7 @@ export default class Recorder {
         const { buffers, blob } = event.data;
         this.combinedBuffers = buffers;
 
-        this.saveRecording(blob);
+        this.saveBlob(blob);
         this.waveformVisualizer.drawBuffer(buffers[0]);
     }
 
@@ -49,6 +53,7 @@ export default class Recorder {
             this.buffers[ch] = event.inputBuffer.getChannelData(ch);
         }
 
+        console.log('rec');
         return this.buffers;
     }
 
@@ -74,7 +79,7 @@ export default class Recorder {
             this.audioStream = stream;
             this.isRunning = true;
 
-            const inputNode = this.audioCtx.createMediaStreamSource(stream);
+            this.inputNode = this.audioCtx.createMediaStreamSource(stream);
             const analyserNode = this.audioCtx.createAnalyser();
             const compressorNode = this.setupCompressor();
 
@@ -84,9 +89,9 @@ export default class Recorder {
 
 
             const gainNode = this.audioCtx.createGain();
-            gainNode.gain.value = 5.0;
+            gainNode.gain.value = 3.0;
 
-            inputNode.connect(analyserNode);
+            this.inputNode.connect(analyserNode);
             analyserNode.connect(compressorNode);
             compressorNode.connect(gainNode);
             gainNode.connect(processor);
@@ -102,6 +107,7 @@ export default class Recorder {
             });
 
             processor.onaudioprocess = (event) => {
+                this.isRunning &&
                 this.worker.postMessage({ command: 'record', buffers: this.getBuffers(event) });
             };
 
@@ -123,7 +129,7 @@ export default class Recorder {
 
     stop() {
         this.worker.postMessage({ command:'finish' });
-        this.audioStream && this.audioStream.getAudioTracks()[0].stop();
+        this.audioCtx.suspend();
         this.isRunning = false;
     }
 
@@ -131,9 +137,12 @@ export default class Recorder {
         this.startRatio = startRatio;
         this.endRatio = endRatio;
         this.durationRatio = durationRatio;
+        this.trim();
     }
 
-    playFromPosition() {
+    play() {
+        this.audioCtx.resume();
+
         const source = this.audioCtx.createBufferSource();
         const audioBuffer = this.audioCtx.createBuffer(2, this.combinedBuffers[0].length, 44100);
 
@@ -147,24 +156,38 @@ export default class Recorder {
 
         source.connect(this.audioCtx.destination);
 
-        const offset = source.buffer.duration * this.startRatio;
-        const duration = this.durationRatio * source.buffer.duration;
+        let offset = source.buffer.duration * this.startRatio;
+        let duration = this.durationRatio * source.buffer.duration;
+
+        if (isNaN(offset)) {
+            offset = 0;
+        }
+
+        if (isNaN(duration)) {
+            duration = source.buffer.duration;
+        }
 
         source.start(0, offset, duration);
-
-        this.trim();
     }
 
     trim() {
         const bufferLength = this.durationRatio * this.combinedBuffers[0].length;
+        const originalBufferLength = this.combinedBuffers[0].length;
+
+        const tmpBuffer = this.audioCtx.createBuffer(2, originalBufferLength, 44100);
+        let tmpLeftChannel = tmpBuffer.getChannelData(0);
+        let tmpRightChannel = tmpBuffer.getChannelData(1);
+
+        tmpLeftChannel.set(this.combinedBuffers[0]);
+        tmpRightChannel.set(this.combinedBuffers[1]);
 
         const audioBuffer = this.audioCtx.createBuffer(2, bufferLength, 44100);
 
         let leftChannel = audioBuffer.getChannelData(0);
         let rightChannel = audioBuffer.getChannelData(1);
 
-        const trimmedLeftChannel = leftChannel.slice(this.startRatio * bufferLength << 0, this.endRatio * bufferLength << 0);
-        const trimmedRightChannel = rightChannel.slice(this.startRatio * bufferLength << 0, this.endRatio * bufferLength << 0);
+        const trimmedLeftChannel = tmpLeftChannel.slice(this.startRatio * originalBufferLength << 0, this.endRatio * originalBufferLength << 0);
+        const trimmedRightChannel = tmpRightChannel.slice(this.startRatio * originalBufferLength << 0, this.endRatio * originalBufferLength << 0);
 
         leftChannel.set(trimmedLeftChannel);
         rightChannel.set(trimmedRightChannel);
