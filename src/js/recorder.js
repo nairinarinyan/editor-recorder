@@ -53,7 +53,6 @@ export default class Recorder {
             this.buffers[ch] = event.inputBuffer.getChannelData(ch);
         }
 
-        console.log('rec');
         return this.buffers;
     }
 
@@ -171,7 +170,7 @@ export default class Recorder {
     }
 
     trim() {
-        const bufferLength = this.durationRatio * this.combinedBuffers[0].length;
+        const bufferLength = Math.round(this.durationRatio * this.combinedBuffers[0].length);
         const originalBufferLength = this.combinedBuffers[0].length;
 
         const tmpBuffer = this.audioCtx.createBuffer(2, originalBufferLength, 44100);
