@@ -1,4 +1,5 @@
 import { FrequencyVisualizer, WaveformVisualizer } from './visualizers';
+import { showNotification } from './dom';
 
 export default class Recorder {
     constructor(canvasCtx) {
@@ -29,11 +30,12 @@ export default class Recorder {
         xhr.open("POST", this.saveMp3Url);
         xhr.onload = () => {
             if (xhr.status == 204) {
-                console.log("Uploaded");
+                showNotification('Uploaded', true);
             } else {
-                console.error(`Error ${xhr.status}. upload failed`);
+                showNotification('Error');
             }
         };
+
         xhr.send(data);
     }
 

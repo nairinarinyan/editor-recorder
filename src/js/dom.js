@@ -1,9 +1,25 @@
+const notificationNode = document.querySelector('.notification');
+
 export function toggleClasses(className, ...elements) {
     elements.forEach(el => el.classList.toggle(className));
 }
 
 export function getElements(...selectors) {
     return selectors.map(selector => document.querySelector(selector));
+}
+
+export function showNotification(message, error) {
+    notificationNode.firstElementChild.innerText = message;
+
+    if (error) {
+        notificationNode.classList.add('error');
+    }
+
+    notificationNode.classList.add('active');
+    setTimeout(() => {
+        notificationNode.classList.remove('active');
+        notificationNode.classList.remove('error');
+    }, 2000);
 }
 
 export function initTouchEventHandlers(canvas, cb) {

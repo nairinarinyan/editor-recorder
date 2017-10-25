@@ -6,12 +6,11 @@ const [recordButton, canvas, controlPanel, playButton, okButton] = getElements('
 
 const canvasCtx = canvas.getContext('2d');
 
-canvas.width = window.innerWidth * .9;
+canvas.width = window.innerWidth * window.devicePixelRatio * .9;
+canvas.height = window.devicePixelRatio * 200;
 
 const recorder = new Recorder(canvasCtx);
 const drawProgress = new DrawProgress();
-
-canvas.width = window.innerWidth * .9;
 
 recordButton.addEventListener('click', () => {
     toggleClasses('recording', recordButton, controlPanel);
