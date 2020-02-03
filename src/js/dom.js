@@ -43,11 +43,10 @@ export function initTouchEventHandlers(canvas, callBack) {
     });
 
     parent.addEventListener('touchend', evt => {
-        const startRatio =  (initialPosition - boundingBox.left) / boundingBox.width;
-        const endRatio =  (x - boundingBox.left) / boundingBox.width;
-        const durationRatio = delta / boundingBox.width;
-
-        callBack(startRatio, endRatio, durationRatio);
+        const startPosition =  (initialPosition - boundingBox.left) / boundingBox.width;
+        const endPosition =  (x - boundingBox.left) / boundingBox.width;
+        const duration = delta / boundingBox.width;
+        callBack(startPosition, endPosition, duration);
     });
 
     parent.addEventListener('touchmove', evt => {

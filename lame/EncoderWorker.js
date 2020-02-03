@@ -71,7 +71,13 @@ self.onmessage = function(event) {
             self.postMessage({ buffers: buf, blob: encoder.finish() });
             break;
         case 'cancel':
-            encoder.cancel();
-            encoder = undefined;
+            if (encoder) {
+                try {
+                    encoder.cancel();
+                } catch (e) {
+
+                }
+                encoder = undefined;
+            }
     }
 };

@@ -58,7 +58,22 @@ export default class Recorder {
         return this.buffers;
     }
 
+    cleanup() {
+        this.isRunning = false;
+        this.worker.postMessage({ command:'cancel' });
+        if (this.audioCtx) {
+            this.audioCtx.close();
+        }
+        if (this.inputNode) {
+            this.inputNode.disconnect();
+        }
+        if (this.volumeControlNode) {
+            this.volumeControlNode.disconnect();
+        }
+    }
+
     start() {
+        this.cleanup();
         this.audioCtx = new AudioContext();
 
         navigator.mediaDevices.getUserMedia({
@@ -134,10 +149,10 @@ export default class Recorder {
         this.isRunning = false;
     }
 
-    setBufferPositions(startRatio, endRatio, durationRatio) {
-        this.startRatio = startRatio;
-        this.endRatio = endRatio;
-        this.durationRatio = durationRatio;
+    setBufferPositions(startPosition, endPosition, duration) {
+        this.startPosition = startPosition;
+        this.endPosition = endPosition;
+        this.duration = duration;
         this.trim();
     }
 
@@ -157,8 +172,8 @@ export default class Recorder {
 
         source.connect(this.audioCtx.destination);
 
-        let offset = source.buffer.duration * this.startRatio;
-        let duration = this.durationRatio * source.buffer.duration;
+        let offset = source.buffer.duration * this.startPosition;
+        let duration = this.duration * source.buffer.duration;
 
         if (isNaN(offset)) {
             offset = 0;
@@ -168,11 +183,13 @@ export default class Recorder {
             duration = source.buffer.duration;
         }
 
+        console.log('duration now', duration);
+
         source.start(0, offset, duration);
     }
 
     trim() {
-        const bufferLength = Math.round(this.durationRatio * this.combinedBuffers[0].length);
+        const bufferLength = Math.round(this.duration * this.combinedBuffers[0].length);
         const originalBufferLength = this.combinedBuffers[0].length;
 
         const tmpBuffer = this.audioCtx.createBuffer(2, originalBufferLength, 44100);
@@ -187,8 +204,8 @@ export default class Recorder {
         let leftChannel = audioBuffer.getChannelData(0);
         let rightChannel = audioBuffer.getChannelData(1);
 
-        const trimmedLeftChannel = tmpLeftChannel.slice(this.startRatio * originalBufferLength << 0, this.endRatio * originalBufferLength << 0);
-        const trimmedRightChannel = tmpRightChannel.slice(this.startRatio * originalBufferLength << 0, this.endRatio * originalBufferLength << 0);
+        const trimmedLeftChannel = tmpLeftChannel.slice(this.startPosition * originalBufferLength << 0, this.endPosition * originalBufferLength << 0);
+        const trimmedRightChannel = tmpRightChannel.slice(this.startPosition * originalBufferLength << 0, this.endPosition * originalBufferLength << 0);
 
         leftChannel.set(trimmedLeftChannel);
         rightChannel.set(trimmedRightChannel);
