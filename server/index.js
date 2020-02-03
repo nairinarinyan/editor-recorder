@@ -24,8 +24,8 @@ const server = http.createServer((req, res) => {
 
 
 server.listen(port, (err) => {
-  if (err) {
-    return console.log('something went teribally wrong', err)
-  }
-  console.log(`server is listening on ${port}`)
+    if (err) {
+        return console.log('something went teribally wrong', err)
+    }
+    console.log(`server is listening on ${port}`)
 })
