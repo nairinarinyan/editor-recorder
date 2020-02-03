@@ -22,22 +22,24 @@ export function showNotification(message, error) {
     }, 2000);
 }
 
-export function initTouchEventHandlers(canvas, cb) {
+export function initTouchEventHandlers(canvas, callBack) {
     const parent = canvas.parentElement;
     let initialPosition;
     let delta;
-    const overLayElement = document.querySelector('.overlay');
+    const selectionOverlayElement = document.querySelector('.sound-selection-overlay');
+    const startOverlayElement = document.querySelector('.sound-start-overlay');
+    const endOverlayElement = document.querySelector('.sound-end-overlay');
     const boundingBox = parent.getBoundingClientRect(); 
 
     let x;
 
     parent.addEventListener('touchstart', evt => {
         x = evt.changedTouches[0].clientX;
-
         initialPosition = x;
-        overLayElement.style.transform = `translate(${initialPosition - boundingBox.left}px)`;
-        overLayElement.style.display = 'block';
-        overLayElement.style.width = 0;
+        selectionOverlayElement.style.transform = startOverlayElement.style.transform = `translate(${initialPosition - boundingBox.left}px)`;
+        selectionOverlayElement.style.display = 'block';
+        selectionOverlayElement.style.width = 0;
+        startOverlayElement.style.height = endOverlayElement.style.height = boundingBox.height;
     });
 
     parent.addEventListener('touchend', evt => {
@@ -45,7 +47,7 @@ export function initTouchEventHandlers(canvas, cb) {
         const endRatio =  (x - boundingBox.left) / boundingBox.width;
         const durationRatio = delta / boundingBox.width;
 
-        cb(startRatio, endRatio, durationRatio);
+        callBack(startRatio, endRatio, durationRatio);
     });
 
     parent.addEventListener('touchmove', evt => {
@@ -58,7 +60,9 @@ export function initTouchEventHandlers(canvas, cb) {
         delta = x - initialPosition;
 
         requestAnimationFrame(() => {
-            overLayElement.style.width = delta + 'px';
+            selectionOverlayElement.style.width = delta + 'px';
+            startOverlayElement.style.display = endOverlayElement.style.display = 'block';
+            endOverlayElement.style.transform = `translate(${initialPosition - boundingBox.left + delta - 4}px)`;
         });
     });
 }

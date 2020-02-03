@@ -27,7 +27,7 @@ canvas {
     display: block;
 }
 
-.overlay {
+.sound-selection-overlay {
     display: none;
     position: absolute;
     top: 0;
@@ -35,6 +35,29 @@ canvas {
     width: 100%;
     background-color: rgba(0, 158, 208, .3);
 }
+
+.sound-start-overlay {
+    position: absolute;
+    display: none;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    border-width:2px 0px 2px 2px;
+    border-style:solid;
+    border-color:rgba(0, 158, 208, .6);
+}
+
+.sound-end-overlay {
+    position: absolute;
+    display: none;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    border-width:2px 2px 2px 0px;
+    border-style:solid;
+    border-color:rgba(0, 158, 208, .6);
+}
+
 
 .button {
     display: flex;

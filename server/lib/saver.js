@@ -16,7 +16,7 @@ class Saver {
 
     done() {
         this.file.end();
-        console.log("The file was succesfully saved!");
+        console.log("The file was succesfully saved!", Config.SOUND_FILE_NAME);
     }
 }
 
